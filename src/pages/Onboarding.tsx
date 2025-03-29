@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
@@ -34,6 +35,8 @@ interface FormData {
   pincode: string;
   billsPerMonth: string;
   useEInvoice: boolean;
+  gstNumber: string;
+  hasGst: boolean;
 }
 
 const Onboarding = () => {
@@ -59,7 +62,9 @@ const Onboarding = () => {
     country: "India",
     pincode: "",
     billsPerMonth: "",
-    useEInvoice: false
+    useEInvoice: false,
+    gstNumber: "",
+    hasGst: false
   });
 
   // Navigate between steps
@@ -82,18 +87,18 @@ const Onboarding = () => {
   };
 
   // Update form state
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle toggle changes
+  const handleToggleChange = (checked: boolean, name: string) => {
+    setFormData({ ...formData, [name]: checked });
   };
 
   // Handle select changes
   const handleSelectChange = (name: string, value: string) => {
     setFormData({ ...formData, [name]: value });
-  };
-
-  // Toggle boolean values
-  const handleToggle = (name: string) => {
-    setFormData({ ...formData, [name]: !formData[name as keyof FormData] });
   };
 
   // Load saved data on mount
@@ -111,7 +116,7 @@ const Onboarding = () => {
 
   const renderStepIndicator = () => {
     return (
-      <div className="mb-8 text-white text-lg font-medium">
+      <div className="text-white text-base mb-2">
         ----- Step {step} of 7 -----
       </div>
     );
@@ -119,13 +124,13 @@ const Onboarding = () => {
 
   const renderStepTitle = () => {
     switch(step) {
-      case 1: return "Welcome to TransactifyRoom";
+      case 1: return "Welcome to Billclap";
       case 2: return "About You";
       case 3: return "About Business Details";
-      case 4: return "Company Information";
-      case 5: return "Industry Selection";
+      case 4: return "Company Type";
+      case 5: return "Industry Type";
       case 6: return "Registration Details";
-      case 7: return "Payment Setup";
+      case 7: return "Congratulations!";
       default: return "";
     }
   };
@@ -134,7 +139,7 @@ const Onboarding = () => {
     switch(step) {
       case 3:
         return (
-          <div className="text-white/90 mb-12 max-w-md">
+          <div className="text-white/90 mb-8 max-w-md">
             Tell us more about your business by sharing your company name, GST
             details, average number of bills generated in a month, and whether you use
             e-invoice or e-way bill systems. This helps us understand your operations
@@ -143,13 +148,96 @@ const Onboarding = () => {
         );
       case 4:
         return (
-          <div className="text-white/90 mb-12 max-w-md">
-            Help us understand your company structure and organization better
-            so we can customize our services to match your specific needs.
+          <div className="text-white/90 mb-8 max-w-md">
+            Select your company type to help us tailor our services to meet your specific
+            business needs and industry requirements.
           </div>
         );
-      default: return null;
+      case 5:
+        return (
+          <div className="text-white/90 mb-8 max-w-md">
+            Select your industry type to help us tailor our services to meet your specific
+            business needs and industry requirements.
+          </div>
+        );
+      case 1:
+        return null;
+      case 7:
+        return (
+          <div className="text-white/90 mb-8 text-center max-w-md mx-auto">
+            Thank you for entrusting us with your business! Your details have been submitted
+            successfully. Sit back and relax while we take it from here.
+          </div>
+        );
+      default:
+        return null;
     }
+  };
+
+  // Render company type options
+  const renderCompanyTypeOptions = () => {
+    const companyTypes = [
+      { id: "retail", name: "Retail", icon: "/lovable-uploads/d7151558-8f7b-4720-b10c-aa07eba001c0.png" },
+      { id: "wholesale", name: "Wholesale", icon: "/lovable-uploads/fd569f55-6f1e-4e15-951b-31519f28be83.png" },
+      { id: "manufacturing", name: "Manufacturing", icon: "/lovable-uploads/96bc93ee-770c-4736-9917-a65c6166c801.png" },
+      { id: "distributor", name: "Distributor", icon: "/lovable-uploads/23c958f4-8439-4926-9101-018bc647b0b6.png" },
+      { id: "service", name: "Service", icon: "/lovable-uploads/fd569f55-6f1e-4e15-951b-31519f28be83.png" },
+      { id: "individual", name: "Individual", icon: "/lovable-uploads/23c958f4-8439-4926-9101-018bc647b0b6.png" },
+    ];
+
+    return (
+      <div className="grid grid-cols-3 gap-4">
+        {companyTypes.map((type) => (
+          <div
+            key={type.id}
+            className={`flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all hover:border-blue-400 ${
+              formData.companyType === type.id ? "border-blue-500 bg-blue-50" : "border-gray-200"
+            }`}
+            onClick={() => handleSelectChange("companyType", type.id)}
+          >
+            <img src={type.icon} alt={type.name} className="w-16 h-16 mb-2" />
+            <span className="text-sm font-medium">{type.name}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Render industry type options
+  const renderIndustryTypeOptions = () => {
+    const industryTypes = [
+      "Agriculture", 
+      "Tourism", 
+      "Healthcare",
+      "Information Technology", 
+      "Finance and Insurance", 
+      "Hospitality and Tourism",
+      "Education", 
+      "Energy and Utilities", 
+      "Transportation & Logistics",
+      "Entertainment and Media", 
+      "Real Estate", 
+      "Telecommunications",
+      "Automotive", 
+      "Fashion and Apparel", 
+      "Other"
+    ];
+
+    return (
+      <div className="grid grid-cols-3 gap-4">
+        {industryTypes.map((type) => (
+          <div
+            key={type}
+            className={`flex items-center justify-center p-3 border rounded-lg cursor-pointer transition-all hover:border-blue-400 ${
+              formData.industryType === type ? "border-blue-500 bg-blue-50" : "border-gray-200"
+            }`}
+            onClick={() => handleSelectChange("industryType", type)}
+          >
+            <span className="text-sm font-medium">{type}</span>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   // Render step content
@@ -161,8 +249,8 @@ const Onboarding = () => {
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
               <CheckCircle className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold mb-6 text-white">Welcome to TransactifyRoom</h2>
-            <p className="text-white/80 mb-8">Let's set up your business profile to get started with our virtual deal room.</p>
+            <h2 className="text-2xl font-bold mb-6 text-white">Welcome to Billclap</h2>
+            <p className="text-white/80 mb-8">Let's set up your business profile to get started with our invoicing platform.</p>
             <Button onClick={handleNext} className="w-full bg-white text-blue-600 hover:bg-white/90 hover:text-blue-700">
               Get Started <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
@@ -222,18 +310,38 @@ const Onboarding = () => {
         return (
           <Card className="bg-white rounded-md p-6 shadow-lg w-full max-w-xl">
             <div className="mb-4">
-              <div className="flex items-center">
-                <div className="w-5 h-5 rounded-full bg-blue-600 mr-2"></div>
-                <span className="text-gray-800 font-medium">Do you have GST Number?</span>
-                <span className="text-gray-400 ml-2">(optional)</span>
-                <div className="ml-auto">
-                  <input type="checkbox" className="toggle" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-blue-600 mr-2"></div>
+                  <span className="text-gray-800 text-sm font-medium">Do you have GST Number?</span>
+                  <span className="text-gray-400 ml-2 text-xs">(optional)</span>
                 </div>
+                <Switch 
+                  checked={formData.hasGst}
+                  onCheckedChange={(checked) => handleToggleChange(checked, "hasGst")}
+                />
               </div>
             </div>
 
+            {formData.hasGst && (
+              <div className="mb-4">
+                <Label htmlFor="gstNumber" className="text-gray-700">
+                  GST Number
+                </Label>
+                <Input 
+                  id="gstNumber"
+                  type="text" 
+                  name="gstNumber" 
+                  value={formData.gstNumber} 
+                  onChange={handleChange} 
+                  placeholder="Enter GST Number" 
+                  className="border-gray-300"
+                />
+              </div>
+            )}
+
             <div className="mb-4">
-              <Label htmlFor="businessName" className="text-gray-800 block mb-1">
+              <Label htmlFor="businessName" className="text-gray-700">
                 Enter Your Company Name <span className="text-red-500">*</span>
               </Label>
               <Input 
@@ -243,13 +351,13 @@ const Onboarding = () => {
                 value={formData.businessName} 
                 onChange={handleChange} 
                 placeholder="Enter your company name" 
-                className="w-full border border-gray-300 rounded-md"
+                className="border-gray-300"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <Label htmlFor="pincode" className="text-gray-800 block mb-1">
+                <Label htmlFor="pincode" className="text-gray-700">
                   Enter Your Pincode <span className="text-red-500">*</span>
                 </Label>
                 <Input 
@@ -259,11 +367,11 @@ const Onboarding = () => {
                   value={formData.pincode} 
                   onChange={handleChange} 
                   placeholder="Enter your 6-digit pincode" 
-                  className="w-full border border-gray-300 rounded-md"
+                  className="border-gray-300"
                 />
               </div>
               <div>
-                <Label htmlFor="city" className="text-gray-800 block mb-1">
+                <Label htmlFor="city" className="text-gray-700">
                   Enter Your City <span className="text-red-500">*</span>
                 </Label>
                 <Input 
@@ -273,18 +381,18 @@ const Onboarding = () => {
                   value={formData.city} 
                   onChange={handleChange} 
                   placeholder="Enter your city" 
-                  className="w-full border border-gray-300 rounded-md"
+                  className="border-gray-300"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <Label htmlFor="state" className="text-gray-800 block mb-1">
+                <Label htmlFor="state" className="text-gray-700">
                   Enter Your State <span className="text-red-500">*</span>
                 </Label>
                 <Select onValueChange={(value) => handleSelectChange("state", value)} value={formData.state}>
-                  <SelectTrigger id="state" className="w-full border border-gray-300 rounded-md">
+                  <SelectTrigger id="state" className="border-gray-300">
                     <SelectValue placeholder="Select your state" />
                   </SelectTrigger>
                   <SelectContent>
@@ -296,11 +404,11 @@ const Onboarding = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="country" className="text-gray-800 block mb-1">
+                <Label htmlFor="country" className="text-gray-700">
                   Enter Your Country <span className="text-red-500">*</span>
                 </Label>
                 <Select onValueChange={(value) => handleSelectChange("country", value)} value={formData.country}>
-                  <SelectTrigger id="country" className="w-full border border-gray-300 rounded-md">
+                  <SelectTrigger id="country" className="border-gray-300">
                     <SelectValue placeholder="Select your country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -314,7 +422,7 @@ const Onboarding = () => {
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <Label htmlFor="billsPerMonth" className="text-gray-800 block mb-1">
+                <Label htmlFor="billsPerMonth" className="text-gray-700">
                   How many bills do you generate in a month?
                 </Label>
                 <Input 
@@ -324,15 +432,15 @@ const Onboarding = () => {
                   value={formData.billsPerMonth} 
                   onChange={handleChange} 
                   placeholder="Enter number of bills" 
-                  className="w-full border border-gray-300 rounded-md"
+                  className="border-gray-300"
                 />
               </div>
               <div>
-                <Label htmlFor="useEInvoice" className="text-gray-800 block mb-1">
+                <Label htmlFor="useEInvoice" className="text-gray-700">
                   Do you use e-invoice or e-way bill system?
                 </Label>
-                <Select onValueChange={(value) => handleSelectChange("useEInvoice", value)} value={formData.useEInvoice ? "yes" : "no"}>
-                  <SelectTrigger id="useEInvoice" className="w-full border border-gray-300 rounded-md">
+                <Select onValueChange={(value) => handleToggleChange(value === "yes", "useEInvoice")} value={formData.useEInvoice ? "yes" : "no"}>
+                  <SelectTrigger id="useEInvoice" className="border-gray-300">
                     <SelectValue placeholder="Select an option" />
                   </SelectTrigger>
                   <SelectContent>
@@ -347,75 +455,15 @@ const Onboarding = () => {
       case 4:
         return (
           <Card className="bg-white rounded-md p-6 shadow-lg w-full max-w-xl">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="companyType" className="text-gray-800 block mb-1">Select Company Type</Label>
-                <Select onValueChange={(value) => handleSelectChange("companyType", value)} value={formData.companyType}>
-                  <SelectTrigger id="companyType" className="w-full border border-gray-300 rounded-md">
-                    <SelectValue placeholder="Select Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="LLC">LLC</SelectItem>
-                    <SelectItem value="Sole Proprietorship">Sole Proprietorship</SelectItem>
-                    <SelectItem value="Corporation">Corporation</SelectItem>
-                    <SelectItem value="Partnership">Partnership</SelectItem>
-                    <SelectItem value="Non-profit">Non-profit</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="address" className="text-gray-800 block mb-1">Company Address</Label>
-                <Input 
-                  id="address"
-                  type="text" 
-                  name="address" 
-                  value={formData.address} 
-                  onChange={handleChange} 
-                  placeholder="Enter company address" 
-                  className="w-full border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="contact" className="text-gray-800 block mb-1">Business Contact Number</Label>
-                <Input 
-                  id="contact"
-                  type="text" 
-                  name="contact" 
-                  value={formData.contact} 
-                  onChange={handleChange} 
-                  placeholder="Enter business contact number" 
-                  className="w-full border border-gray-300 rounded-md"
-                />
-              </div>
-            </div>
+            <h3 className="text-xl font-medium text-gray-800 mb-6">Select Your Company Type</h3>
+            {renderCompanyTypeOptions()}
           </Card>
         );
       case 5:
         return (
           <Card className="bg-white rounded-md p-6 shadow-lg w-full max-w-xl">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="industryType" className="text-gray-800 block mb-1">Select Industry Type</Label>
-                <Select onValueChange={(value) => handleSelectChange("industryType", value)} value={formData.industryType}>
-                  <SelectTrigger id="industryType" className="w-full border border-gray-300 rounded-md">
-                    <SelectValue placeholder="Select Industry" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Technology">Technology</SelectItem>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Healthcare">Healthcare</SelectItem>
-                    <SelectItem value="Retail">Retail</SelectItem>
-                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
-                    <SelectItem value="Real Estate">Real Estate</SelectItem>
-                    <SelectItem value="Education">Education</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+            <h3 className="text-xl font-medium text-gray-800 mb-6">Select Your Industry Type</h3>
+            {renderIndustryTypeOptions()}
           </Card>
         );
       case 6:
@@ -423,7 +471,7 @@ const Onboarding = () => {
           <Card className="bg-white rounded-md p-6 shadow-lg w-full max-w-xl">
             <div className="space-y-4">
               <div>
-                <Label htmlFor="registrationType" className="text-gray-800 block mb-1">Registration/Tax ID</Label>
+                <Label htmlFor="registrationType" className="text-gray-700">Registration/Tax ID</Label>
                 <Input 
                   id="registrationType"
                   type="text" 
@@ -431,7 +479,7 @@ const Onboarding = () => {
                   value={formData.registrationType} 
                   onChange={handleChange} 
                   placeholder="Tax ID / VAT / Registration Number" 
-                  className="w-full border border-gray-300 rounded-md"
+                  className="border-gray-300"
                 />
               </div>
             </div>
@@ -439,29 +487,18 @@ const Onboarding = () => {
         );
       case 7:
         return (
-          <Card className="bg-white rounded-md p-6 shadow-lg w-full max-w-xl">
-            <div className="space-y-4 text-center">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-600 flex items-center justify-center">
-                <CheckCircle className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2 text-gray-800">Almost Done!</h2>
-              <p className="text-gray-600 mb-6">Set up your payment method to start using the platform.</p>
-              
-              <div className="space-y-2">
-                <Label htmlFor="paymentMethod" className="text-gray-800 block mb-1">Payment Method</Label>
-                <Select onValueChange={(value) => handleSelectChange("paymentMethod", value)} value={formData.paymentMethod}>
-                  <SelectTrigger id="paymentMethod" className="w-full border border-gray-300 rounded-md">
-                    <SelectValue placeholder="Select Payment Method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="credit_card">Credit Card</SelectItem>
-                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                    <SelectItem value="paypal">PayPal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="text-center space-y-8">
+            <div className="mx-auto w-20 h-20 flex items-center justify-center">
+              <img src="/lovable-uploads/23c958f4-8439-4926-9101-018bc647b0b6.png" alt="Celebration" className="w-full h-full" />
             </div>
-          </Card>
+            <h1 className="text-white text-3xl font-bold">Congratulations! Steps Completed Successfully</h1>
+            <Button 
+              onClick={handleNext} 
+              className="mt-8 bg-white text-blue-600 hover:bg-white/90 px-6"
+            >
+              Start Billing
+            </Button>
+          </div>
         );
       default:
         return <p>Invalid step</p>;
@@ -470,15 +507,22 @@ const Onboarding = () => {
 
   return (
     <div className="flex min-h-screen bg-blue-600">
-      {/* Left side with step indicator and description */}
+      {/* Left side with logo, step indicator and description */}
       <div className="w-1/3 p-12 flex flex-col">
-        {step > 1 && (
-          <>
-            {renderStepIndicator()}
-            <h1 className="text-3xl font-bold text-white mb-6">{renderStepTitle()}</h1>
-            {renderStepDescription()}
-          </>
-        )}
+        <div className="mb-auto">
+          <div className="text-white text-3xl font-bold mb-12">
+            <span className="text-white">Bill</span>
+            <span className="text-white">clap</span>
+          </div>
+          
+          {step > 1 && step < 7 && (
+            <>
+              {renderStepIndicator()}
+              <h1 className="text-3xl font-bold text-white mb-6">{renderStepTitle()}</h1>
+              {renderStepDescription()}
+            </>
+          )}
+        </div>
       </div>
       
       {/* Right side with form content */}
@@ -502,25 +546,6 @@ const Onboarding = () => {
                 className="bg-white text-blue-600 hover:bg-white/90"
               >
                 Next <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-          )}
-          
-          {step === 7 && (
-            <div className="flex justify-between mt-6">
-              <Button 
-                variant="outline" 
-                onClick={handleBack} 
-                className="bg-transparent text-white border-white hover:bg-white/10"
-              >
-                <ArrowLeft className="mr-2 w-4 h-4" /> Back
-              </Button>
-              
-              <Button 
-                onClick={handleNext} 
-                className="bg-white text-blue-600 hover:bg-white/90"
-              >
-                Launch Dashboard <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>
           )}
