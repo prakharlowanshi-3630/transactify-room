@@ -5,8 +5,9 @@ import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 
 interface FormData {
   name: string;
@@ -86,11 +87,15 @@ const Onboarding = () => {
         {Array.from({ length: 7 }, (_, i) => (
           <div key={i} className="flex flex-col items-center">
             <div 
-              className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${i < step ? 'bg-dealBlue-light text-white' : 'bg-gray-200 text-gray-500'}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 shadow-md transition-all duration-300 ${
+                i < step 
+                  ? 'bg-gradient-to-r from-dealBlue-light to-dealBlue-medium text-white' 
+                  : 'bg-gray-200 text-gray-500'
+              }`}
             >
-              {i + 1}
+              {i < step ? <CheckCircle className="w-5 h-5" /> : i + 1}
             </div>
-            <div className={`text-xs ${i < step ? 'text-dealBlue-light' : 'text-gray-400'}`}>
+            <div className={`text-xs ${i < step ? 'text-dealBlue-light font-medium' : 'text-gray-400'}`}>
               {i === 0 ? 'Welcome' : 
                i === 1 ? 'Profile' : 
                i === 2 ? 'Business' : 
@@ -104,21 +109,40 @@ const Onboarding = () => {
     );
   };
 
+  // Get gradient based on step
+  const getGradientClass = () => {
+    switch(step) {
+      case 1: return "bg-gradient-to-br from-blue-50 to-indigo-100";
+      case 2: return "bg-gradient-to-br from-cyan-50 to-blue-100";
+      case 3: return "bg-gradient-to-br from-sky-50 to-cyan-100";
+      case 4: return "bg-gradient-to-br from-indigo-50 to-blue-100";
+      case 5: return "bg-gradient-to-br from-violet-50 to-purple-100";
+      case 6: return "bg-gradient-to-br from-purple-50 to-indigo-100";
+      case 7: return "bg-gradient-to-br from-blue-50 to-emerald-100";
+      default: return "bg-gradient-to-br from-blue-50 to-indigo-100";
+    }
+  };
+
   // Render step content
   const renderStep = () => {
     switch (step) {
       case 1:
         return (
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-6">Welcome to TransactifyRoom</h2>
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-dealBlue-light to-dealBlue-dark flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-dealBlue-medium to-dealBlue-dark bg-clip-text text-transparent">Welcome to TransactifyRoom</h2>
             <p className="text-gray-600 mb-8">Let's set up your business profile to get started with our virtual deal room.</p>
-            <Button onClick={handleNext} className="w-full">Get Started</Button>
+            <Button onClick={handleNext} className="w-full bg-gradient-to-r from-dealBlue-light to-dealBlue-dark hover:from-dealBlue-medium hover:to-dealBlue-dark">
+              Get Started <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         );
       case 2:
         return (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold mb-4">Tell Us About You</h2>
+            <h2 className="text-xl font-bold mb-4 text-dealBlue-dark">Tell Us About You</h2>
             
             <div className="space-y-2">
               <Label htmlFor="name">Your Name</Label>
@@ -129,6 +153,7 @@ const Onboarding = () => {
                 value={formData.name} 
                 onChange={handleChange} 
                 placeholder="Enter your full name" 
+                className="border-dealBlue-light/30 focus:border-dealBlue-light"
               />
             </div>
             
@@ -141,6 +166,7 @@ const Onboarding = () => {
                 value={formData.email} 
                 onChange={handleChange} 
                 placeholder="you@example.com" 
+                className="border-dealBlue-light/30 focus:border-dealBlue-light"
               />
             </div>
             
@@ -151,7 +177,7 @@ const Onboarding = () => {
                 name="role" 
                 value={formData.role} 
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-md border border-dealBlue-light/30 bg-background px-3 py-2 text-sm focus:border-dealBlue-light"
               >
                 <option value="">Select Role</option>
                 <option value="buyer">Buyer</option>
@@ -160,13 +186,15 @@ const Onboarding = () => {
               </select>
             </div>
             
-            <Button onClick={handleNext} className="w-full mt-4">Continue</Button>
+            <Button onClick={handleNext} className="w-full mt-4 bg-gradient-to-r from-dealBlue-light to-dealBlue-dark hover:from-dealBlue-medium hover:to-dealBlue-dark">
+              Continue <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         );
       case 3:
         return (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold mb-4">Business Details</h2>
+            <h2 className="text-xl font-bold mb-4 text-dealBlue-dark">Business Details</h2>
             
             <div className="space-y-2">
               <Label htmlFor="businessName">Business Name</Label>
@@ -177,6 +205,7 @@ const Onboarding = () => {
                 value={formData.businessName} 
                 onChange={handleChange} 
                 placeholder="Your business name" 
+                className="border-dealBlue-light/30 focus:border-dealBlue-light"
               />
             </div>
             
@@ -189,6 +218,7 @@ const Onboarding = () => {
                 value={formData.address} 
                 onChange={handleChange} 
                 placeholder="Enter your business address" 
+                className="border-dealBlue-light/30 focus:border-dealBlue-light"
               />
             </div>
             
@@ -201,16 +231,19 @@ const Onboarding = () => {
                 value={formData.contact} 
                 onChange={handleChange} 
                 placeholder="Phone or alternative contact" 
+                className="border-dealBlue-light/30 focus:border-dealBlue-light"
               />
             </div>
             
-            <Button onClick={handleNext} className="w-full mt-4">Continue</Button>
+            <Button onClick={handleNext} className="w-full mt-4 bg-gradient-to-r from-dealBlue-light to-dealBlue-dark hover:from-dealBlue-medium hover:to-dealBlue-dark">
+              Continue <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         );
       case 4:
         return (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold mb-4">Company Type</h2>
+            <h2 className="text-xl font-bold mb-4 text-dealBlue-dark">Company Type</h2>
             
             <div className="space-y-2">
               <Label htmlFor="companyType">Select Company Type</Label>
@@ -219,7 +252,7 @@ const Onboarding = () => {
                 name="companyType" 
                 value={formData.companyType} 
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-md border border-dealBlue-light/30 bg-background px-3 py-2 text-sm focus:border-dealBlue-light"
               >
                 <option value="">Select Type</option>
                 <option value="LLC">LLC</option>
@@ -231,13 +264,15 @@ const Onboarding = () => {
               </select>
             </div>
             
-            <Button onClick={handleNext} className="w-full mt-4">Continue</Button>
+            <Button onClick={handleNext} className="w-full mt-4 bg-gradient-to-r from-dealBlue-light to-dealBlue-dark hover:from-dealBlue-medium hover:to-dealBlue-dark">
+              Continue <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         );
       case 5:
         return (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold mb-4">Industry Type</h2>
+            <h2 className="text-xl font-bold mb-4 text-dealBlue-dark">Industry Type</h2>
             
             <div className="space-y-2">
               <Label htmlFor="industryType">Your Industry</Label>
@@ -246,7 +281,7 @@ const Onboarding = () => {
                 name="industryType" 
                 value={formData.industryType} 
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-md border border-dealBlue-light/30 bg-background px-3 py-2 text-sm focus:border-dealBlue-light"
               >
                 <option value="">Select Industry</option>
                 <option value="Technology">Technology</option>
@@ -260,13 +295,15 @@ const Onboarding = () => {
               </select>
             </div>
             
-            <Button onClick={handleNext} className="w-full mt-4">Continue</Button>
+            <Button onClick={handleNext} className="w-full mt-4 bg-gradient-to-r from-dealBlue-light to-dealBlue-dark hover:from-dealBlue-medium hover:to-dealBlue-dark">
+              Continue <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         );
       case 6:
         return (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold mb-4">Company Registration</h2>
+            <h2 className="text-xl font-bold mb-4 text-dealBlue-dark">Company Registration</h2>
             
             <div className="space-y-2">
               <Label htmlFor="registrationType">Registration/Tax ID</Label>
@@ -277,16 +314,22 @@ const Onboarding = () => {
                 value={formData.registrationType} 
                 onChange={handleChange} 
                 placeholder="Tax ID / VAT / Registration Number" 
+                className="border-dealBlue-light/30 focus:border-dealBlue-light"
               />
             </div>
             
-            <Button onClick={handleNext} className="w-full mt-4">Continue</Button>
+            <Button onClick={handleNext} className="w-full mt-4 bg-gradient-to-r from-dealBlue-light to-dealBlue-dark hover:from-dealBlue-medium hover:to-dealBlue-dark">
+              Continue <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
           </div>
         );
       case 7:
         return (
           <div className="space-y-4 text-center">
-            <h2 className="text-2xl font-bold mb-2">Almost Done!</h2>
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-r from-dealBlue-light to-emerald-400 flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-dealBlue-medium to-emerald-500 bg-clip-text text-transparent">Almost Done!</h2>
             <p className="text-gray-600 mb-6">Set up your payment method to start using the platform.</p>
             
             <div className="space-y-2">
@@ -296,7 +339,7 @@ const Onboarding = () => {
                 name="paymentMethod" 
                 value={formData.paymentMethod} 
                 onChange={handleChange}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-md border border-dealBlue-light/30 bg-background px-3 py-2 text-sm focus:border-dealBlue-light"
               >
                 <option value="">Select Payment Method</option>
                 <option value="credit_card">Credit Card</option>
@@ -305,8 +348,8 @@ const Onboarding = () => {
               </select>
             </div>
             
-            <Button onClick={handleNext} variant="default" className="w-full mt-8">
-              Launch Dashboard
+            <Button onClick={handleNext} variant="default" className="w-full mt-8 bg-gradient-to-r from-dealBlue-light to-emerald-500 hover:from-dealBlue-medium hover:to-emerald-600">
+              Launch Dashboard <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </div>
         );
@@ -316,18 +359,22 @@ const Onboarding = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        {step > 1 && step < 7 && renderProgress()}
-        {renderStep()}
-        <div className="flex justify-between mt-6">
-          {step > 1 && step < 7 && (
-            <Button variant="outline" onClick={handleBack}>
-              Back
-            </Button>
-          )}
-        </div>
-      </div>
+    <div className={`flex flex-col items-center justify-center min-h-screen p-6 ${getGradientClass()} transition-all duration-500`}>
+      <Card className="shadow-xl border-0 overflow-hidden w-full max-w-md bg-white/90 backdrop-blur-sm">
+        <CardHeader className="pb-0">
+          {step > 1 && step < 7 && renderProgress()}
+        </CardHeader>
+        <CardContent className="p-8">
+          {renderStep()}
+          <div className="flex justify-between mt-6">
+            {step > 1 && step < 7 && (
+              <Button variant="outline" onClick={handleBack} className="border-dealBlue-light/30 hover:bg-dealBlue-light/10">
+                <ArrowLeft className="mr-2 w-4 h-4" /> Back
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
