@@ -8,7 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Layout from "@/components/layout/Layout";
 
 // Pages
-import Index from "./pages/Index";
+import Index from "./pages/index"; // Fixed casing
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";

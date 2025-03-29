@@ -1,124 +1,104 @@
 
-import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { ShieldCheck, MessageSquare, FileText, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-dealBlue text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Secure Business Transactions Platform
+      <div className="flex-1 flex flex-col md:flex-row items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="md:w-1/2 text-center md:text-left mb-8 md:mb-0 md:pr-8">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+            <span className="block">TransactifyRoom</span>
+            <span className="block text-dealBlue-light">Virtual Deal Room</span>
           </h1>
-          <p className="text-xl max-w-3xl mx-auto mb-10">
-            TransactifyRoom is the virtual deal room where buyers and sellers negotiate deals in real-time, 
-            upload documents, and securely finalize transactions.
+          <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg md:mt-5 md:text-xl">
+            A secure platform for buyers and sellers to negotiate deals, exchange documents, and finalize transactions in real-time.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" asChild className="bg-white text-dealBlue hover:bg-gray-100">
-              <Link to="/register">Get Started</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild className="text-white border-white hover:bg-dealBlue-dark">
-              <Link to="/login">Login</Link>
-            </Button>
+          <div className="mt-5 sm:mt-8 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+            {isAuthenticated ? (
+              <Button asChild size="lg">
+                <Link to="/dashboard">Go to Dashboard</Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild size="lg">
+                  <Link to="/register">Get Started</Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link to="/login">Sign In</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Key Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-              <div className="bg-dealBlue-light/20 p-4 rounded-full mb-4">
-                <Users className="h-8 w-8 text-dealBlue-light" />
+        <div className="md:w-1/2">
+          <div className="relative w-full h-64 sm:h-72 md:h-96 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="p-6 bg-white rounded-lg shadow-lg w-4/5 max-w-md">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-2.5 bg-gray-200 rounded-full w-24"></div>
+                  <div className="h-2.5 bg-dealBlue-light rounded-full w-12"></div>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
+                <div className="h-2 bg-gray-200 rounded-full mb-2.5 w-4/5"></div>
+                <div className="h-2 bg-gray-200 rounded-full mb-2.5 w-3/5"></div>
+                <div className="mt-4 flex justify-between">
+                  <div className="h-6 bg-dealBlue-light bg-opacity-20 rounded w-1/4"></div>
+                  <div className="h-6 bg-green-100 rounded w-1/4"></div>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-3">User Management</h3>
-              <p className="text-gray-600">
-                Secure JWT-based authentication with role-based access for buyers and sellers.
-              </p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-              <div className="bg-dealBlue-light/20 p-4 rounded-full mb-4">
-                <ShieldCheck className="h-8 w-8 text-dealBlue-light" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Secure Deals</h3>
-              <p className="text-gray-600">
-                Create and negotiate deals with real-time price updates and status tracking.
-              </p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-              <div className="bg-dealBlue-light/20 p-4 rounded-full mb-4">
-                <MessageSquare className="h-8 w-8 text-dealBlue-light" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Real-time Chat</h3>
-              <p className="text-gray-600">
-                Instant messaging between buyers and sellers with typing indicators.
-              </p>
-            </div>
-            
-            <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-              <div className="bg-dealBlue-light/20 p-4 rounded-full mb-4">
-                <FileText className="h-8 w-8 text-dealBlue-light" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Document Sharing</h3>
-              <p className="text-gray-600">
-                Secure document upload with granular access control for sensitive files.
-              </p>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+      </div>
+      
+      <div className="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-extrabold text-gray-900">
+              Key Features
+            </h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-dealBlue-light inline-flex justify-center items-center w-12 h-12 rounded-full text-white text-xl font-bold mb-4">1</div>
-              <h3 className="text-xl font-semibold mb-3">Create an Account</h3>
-              <p className="text-gray-600">
-                Sign up as a buyer or seller to access the platform's features.
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="bg-dealBlue-light bg-opacity-10 p-3 rounded-full inline-flex mb-4">
+                <svg className="h-6 w-6 text-dealBlue-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900">Real-time Negotiation</h3>
+              <p className="mt-2 text-base text-gray-500">
+                Negotiate deal terms in real-time with instant messaging and price proposals.
               </p>
             </div>
-            
-            <div className="text-center">
-              <div className="bg-dealBlue-light inline-flex justify-center items-center w-12 h-12 rounded-full text-white text-xl font-bold mb-4">2</div>
-              <h3 className="text-xl font-semibold mb-3">Initiate or Join Deals</h3>
-              <p className="text-gray-600">
-                Create new deals or participate in existing ones with secure negotiation.
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="bg-dealBlue-light bg-opacity-10 p-3 rounded-full inline-flex mb-4">
+                <svg className="h-6 w-6 text-dealBlue-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900">Secure Document Sharing</h3>
+              <p className="mt-2 text-base text-gray-500">
+                Upload and share confidential documents with customizable access controls.
               </p>
             </div>
-            
-            <div className="text-center">
-              <div className="bg-dealBlue-light inline-flex justify-center items-center w-12 h-12 rounded-full text-white text-xl font-bold mb-4">3</div>
-              <h3 className="text-xl font-semibold mb-3">Finalize Transactions</h3>
-              <p className="text-gray-600">
-                Complete deals with document signing and secure payment processing.
+            <div className="bg-white p-6 rounded-lg shadow-sm">
+              <div className="bg-dealBlue-light bg-opacity-10 p-3 rounded-full inline-flex mb-4">
+                <svg className="h-6 w-6 text-dealBlue-light" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900">Analytics & Insights</h3>
+              <p className="mt-2 text-base text-gray-500">
+                Track deal progress, performance metrics, and transaction history.
               </p>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-dealBlue text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl max-w-2xl mx-auto mb-10">
-            Join TransactifyRoom today and experience secure, efficient business transactions.
-          </p>
-          <Button size="lg" asChild className="bg-white text-dealBlue hover:bg-gray-100">
-            <Link to="/register">Sign Up Now</Link>
-          </Button>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };
