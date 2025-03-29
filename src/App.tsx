@@ -8,7 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Layout from "@/components/layout/Layout";
 
 // Pages
-import Index from "./pages/index"; // We renamed the file but keeping import the same
+import Landing from "./pages/landing"; // Changed from "index" to "landing" to fix casing
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -31,7 +31,7 @@ const App = () => (
         <BrowserRouter>
           <Layout>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/dashboard" element={<Dashboard />} />
